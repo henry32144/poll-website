@@ -3,7 +3,7 @@
 *.pyc
 __pycache__/
 
-*.db
+**/*.db
 
 instance/
 

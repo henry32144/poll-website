@@ -47,12 +47,17 @@ def vote():
         abort(422)     
     if len(user_id) < 1 or len(voted_answers_id) < 1:
         abort(422)
-
-    # Answer should exist
-    Vote.query.filter_by(poll_id=poll_id).delete()
     
     # Get Poll UUID
     poll = Poll.query.filter_by(id=poll_id).first()
+
+    if poll is None:
+        abort(422)
+    elif len(voted_answers_id) > poll.max_selection_limit:
+        abort(422)
+
+    # Delete old votes
+    Vote.query.filter_by(poll_id=poll_id).delete()
 
     voted_answers = []
     for ans_id in voted_answers_id:
@@ -143,5 +148,6 @@ def poll(uuid=None):
             "poll_id": poll.id,
             "result_link": "http://127.0.0.1:5000/result/{}".format(poll.uuid)
         }
+
         print(variables)
         return render_template("poll.html", **variables)

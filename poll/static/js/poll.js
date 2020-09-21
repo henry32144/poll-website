@@ -1,5 +1,7 @@
 $(document).ready(function () {
 
+    var max_limit = parseInt($("#max-limit").text());
+
     function create_UUID() {
         var dt = new Date().getTime();
         var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -49,8 +51,15 @@ $(document).ready(function () {
     $("#poll-form").on("submit", function (e) {
         var arr = $(this).serialize().toString();
         if (arr.indexOf("answer") < 0) {
+            // No answer selected
             e.preventDefault();
             $(".answer-selection").addClass("is-invalid");
+            $(".invalid-feedback").text("At least choose one answer");
+        } else if ($(".answer-selection:checked").length > max_limit) {
+            // Select more than max limit
+            e.preventDefault();
+            $(".answer-selection").addClass("is-invalid");
+            $(".invalid-feedback").text("You can only select up to " + max_limit + " options");
         } else {
             var uuid = getCookie("uuid");
             if (uuid === "") {
@@ -65,8 +74,6 @@ $(document).ready(function () {
     });
 
     $(".answer-selection").change(function () {
-        if (this.checked) {
-            $(".answer-selection").removeClass("is-invalid");
-        }
+        console.log($(".answer-selection:checked").length);
     });
 });

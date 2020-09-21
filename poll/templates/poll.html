@@ -46,7 +46,7 @@
                                         </div>
                                     {% endfor %}
                                 {% else %}
-                                    <legend class="col-form-label">(You can select up to {{ max_limit }} options)</legend>
+                                    <legend class="col-form-label">(You can select up to <span id="max-limit">{{ max_limit }}</span> options)</legend>
                                     {% for answer in answers %}
                                         <div class="form-check mt-2 answers-group">
                                             <input class="form-check-input answer-selection" type="checkbox" name="answer"

@@ -31,13 +31,14 @@
                         <h4 class="col-md-8">{{ question }}</h4>
                     </div>
                     <form action="/vote" method="post" id="poll-form">
+                        <input type="hidden" name="pollId" value="{{ poll_id }}"/>
                         <div class="my-3 form-row justify-content-center">
                             <div class="form-group col-md-8">
                                 {% if max_limit == 1 %}
                                     {% for answer in answers %}
                                         <div class="form-check mt-2 answers-group">
                                             <input class="form-check-input answer-selection" type="radio" name="answer"
-                                                value="{{ answer.id }}" id="{{ answer.id }}">
+                                                value="{{ answer.id }}" id="{{ answer.id }}" {% if answer.checked %}checked{% endif %}>
                                             <label class="form-check-label" for="{{ answer.id }}">
                                                 {{ answer.text }}
                                             </label>
@@ -49,7 +50,7 @@
                                     {% for answer in answers %}
                                         <div class="form-check mt-2 answers-group">
                                             <input class="form-check-input answer-selection" type="checkbox" name="answer"
-                                                value="{{ answer.id }}" id="{{ answer.id }}">
+                                                value="{{ answer.id }}" id="{{ answer.id }}" {% if answer.checked %}checked{% endif %}>
                                             <label class="form-check-label" for="{{ answer.id }}">
                                                 {{ answer.text }}
                                             </label>

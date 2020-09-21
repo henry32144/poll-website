@@ -51,6 +51,8 @@ class Poll(db.Model):
     max_selection_limit = db.Column(db.Integer, default=1)
     answers = db.relationship('Answer', backref='poll',
                               lazy=True, cascade="all, delete")
+    votes = db.relationship('Vote', backref='poll',
+                              lazy=True, cascade="all, delete")
     time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
 
     def __repr__(self):
@@ -88,6 +90,8 @@ class Vote(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     voter = db.Column(db.String(255), unique=False, nullable=False)
     answer_id = db.Column(db.Integer, db.ForeignKey('answer.id'),
+                          nullable=False)
+    poll_id = db.Column(db.Integer, db.ForeignKey('poll.id'),
                           nullable=False)
     time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
 

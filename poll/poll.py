@@ -32,30 +32,34 @@ def share(uuid):
     variables = {
         "share_link": "http://127.0.0.1:5000/poll/{}".format(obj.uuid),
     }
+
     return render_template("share.html", **variables)
 
 @bp.route("/vote", methods=["POST"])
 def vote():
     print(request.form)
     user_id = request.form["uuid"]
+    poll_id = request.form["pollId"]
     voted_answers_id = request.form.getlist("answer")
     print(voted_answers_id)
     # Sanity check
-    if user_id is None or voted_answers_id is None:
+    if user_id is None or voted_answers_id is None or poll_id is None:
         abort(422)     
     if len(user_id) < 1 or len(voted_answers_id) < 1:
         abort(422)
 
     # Answer should exist
-    answer = Answer.query.filter_by(id=voted_answers_id[0]).first()
-    if answer is None:
-        abort(422)
+    Vote.query.filter_by(poll_id=poll_id).delete()
     
     # Get Poll UUID
-    poll_id = answer.poll_id
     poll = Poll.query.filter_by(id=poll_id).first()
 
-    voted_answers = [Vote(voter=user_id, answer_id=answer_id) for answer_id in voted_answers_id]
+    voted_answers = []
+    for ans_id in voted_answers_id:
+        voted_answers.append(Vote(voter=user_id,
+                                 answer_id=ans_id,
+                                 poll_id=poll_id
+        ))
 
     db.session.add_all(voted_answers)
     db.session.commit()
@@ -108,11 +112,7 @@ def poll(uuid=None):
     elif request.method == "GET":
         # User has voted before, help him/her check the answers.
         user_uuid = request.cookies.get('uuid')
-        voted_answers = []
-
-        if user_uuid is not None:
-            voted_answers_obj_list = Vote.query.filter_by(voter=user_uuid).all()
-            voted_answers = [obj.to_json() for obj in voted_answers_obj_list]
+        voted_answers = None
 
         poll = Poll.query.filter_by(uuid=uuid).first()
 
@@ -121,12 +121,27 @@ def poll(uuid=None):
 
         answers = [ans.to_json() for ans in poll.answers]
 
+        if user_uuid is not None:
+            voted_answers_obj_list = Vote.query.filter_by(voter=user_uuid, poll_id=poll.id).all()
+            voted_answers = {}
+            for obj in voted_answers_obj_list:
+                voted_answers[obj.answer_id] = True
+
+        # Add checked in answers
+        for ans in answers:
+            if user_uuid is not None and ans["id"] in voted_answers:
+                ans["checked"] = True
+            else:
+                ans["checked"] = False
+
+        
         variables = {
             "question": poll.question,
             "max_limit": poll.max_selection_limit,
             "answers": answers,
             "voted_answers": voted_answers,
+            "poll_id": poll.id,
             "result_link": "http://127.0.0.1:5000/result/{}".format(poll.uuid)
         }
-
+        print(variables)
         return render_template("poll.html", **variables)

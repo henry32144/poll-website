@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="A website helps people make polls!">
+    <title>Poll Website</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles-->
+    <link href="../static/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                SimPoll
+            </a>
+        </div>
+    </nav>
+
+    <main role="main" class="container">
+        <div class="main-content">
+            <div class="row justify-content-center">
+                <div class="my-3 col-md-8 shadow">
+                    <div class="mt-3 row justify-content-center">
+                        <h2 class="col-md-8">Share your poll</h2>
+                    </div>
+                    <div class="mx-1 my-3 row justify-content-center">
+                        <input class="link-box form-control col-md-6 mt-1" type="text" id="share-link-box"
+                            name="share-link" value="{{ share_link }}" readonly>
+                        <a tabindex="0" id="share-link-button"
+                            class="btn btn-primary col-md-2 mx-sm-1 mt-1 popover-button" role="button"
+                            data-toggle="popover" data-trigger="focus" data-placement="bottom"
+                            data-content="Copied to the clipboard">Copy</a>
+                        <a href="{{ share_link }}"
+                            class="btn btn-success col-md-2 mx-sm-1 mt-1" role="button">View</a>
+                    </div>
+                    <!-- <div class="mt-5 row justify-content-center">
+                        <h4 class="col-md-8">You can modify the poll by this link</h4>
+                    </div>
+                    <div class="mx-1 my-3 row justify-content-center">
+                        <input class="link-box form-control col-md-8 mt-1" type="text" id="modify-link-box"
+                            name="modify-link" value="{{ modify_link }}" readonly>
+                        <a tabindex="0" id="modify-link-button"
+                            class="btn btn-primary col-md-2 mx-sm-2 mt-1 popover-button" role="button"
+                            data-toggle="popover" data-trigger="focus" data-placement="bottom"
+                            data-content="Copied to the clipboard">Copy</a>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="../static/js/jquery-3.5.1.slim.min.js"></script>
+    <script src="../static/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/js/share.js"></script>
+
+</html>

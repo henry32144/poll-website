@@ -43,8 +43,17 @@ cd poll-website
 pip install flask
 ```
 3. Run Flask server
+- For Linux
 ```sh
-python app.py
+export FLASK_APP=poll
+export FLASK_ENV=production
+flask run
+```
+- For Windows
+```sh
+set FLASK_APP=poll
+set FLASK_ENV=production
+flask run
 ```
 4. Open your browser and type `127.0.0.1:5000` in url
 

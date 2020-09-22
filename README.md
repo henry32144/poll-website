@@ -1,4 +1,4 @@
-# Draw Lots
+# SimPoll
 
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
@@ -17,9 +17,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-Use this website to pick the luckest person!
-
-This is the starter code of draw lots website.
+Use SimPoll to make simple polls in seconds!
 
 ### Built With
 * [Flask](https://flask.palletsprojects.com/en/1.1.x/)
@@ -40,7 +38,7 @@ git clone https://github.com/henry32144/draw-lots.git
 ```
 2. Install the libraries
 ```sh
-cd draw-lots
+cd poll-website
 
 pip install flask
 ```
@@ -53,7 +51,7 @@ python app.py
 <!-- USAGE -->
 ## Usage
 
-Follow the lectures and finish the remaining parts! You can check the completed version of this project [here](https://github.com/henry32144/draw-lots/tree/completed/) 
+TBD
 
 <!-- CONTRIBUTING -->
 ## Author

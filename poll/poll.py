@@ -30,7 +30,7 @@ def share(uuid):
         abort(404)
     
     variables = {
-        "share_link": "http://127.0.0.1:5000/poll/{}".format(obj.uuid),
+        "share_link": "/poll/{}".format(obj.uuid),
     }
 
     return render_template("share.html", **variables)
@@ -69,7 +69,7 @@ def vote():
     db.session.add_all(voted_answers)
     db.session.commit()
 
-    return render_template("after_vote.html", result_link="http://127.0.0.1:5000/result/{}".format(poll.uuid))
+    return render_template("after_vote.html", result_link="/result/{}".format(poll.uuid))
 
 
 # TODO: 1. Add a "/poll" route to handle POST request from the web page.
@@ -83,7 +83,7 @@ def vote():
 @bp.route("/poll/<uuid>", methods=["GET", "POST"])
 def poll(uuid=None):
     if request.method == "POST":
-        question = escape(request.form["questionTitle"])
+        question = request.form.get("questionTitle", None)
         answers = request.form.getlist("answer")
         max_selection_limit = request.form.get("maxSelectionLimit", 1)
         access_key = generate_access_key()
@@ -94,12 +94,15 @@ def poll(uuid=None):
         try:
             max_selection_limit = int(max_selection_limit)
         except Exception as e:
-            print(str(e))
             abort(422)
         if len(question) < 1 or len(answers) < 1 or max_selection_limit < 1 or max_selection_limit > len(answers):
             abort(422)
         
-        answer_objects = [Answer(text=escape(ans)) for ans in answers]
+        try:
+            question = escape(question)
+            answer_objects = [Answer(text=escape(ans)) for ans in answers]
+        except Exception as e:
+            abort(422)
 
         new_poll = Poll(question=question,
                         access_key=access_key,
@@ -146,7 +149,7 @@ def poll(uuid=None):
             "answers": answers,
             "voted_answers": voted_answers,
             "poll_id": poll.id,
-            "result_link": "http://127.0.0.1:5000/result/{}".format(poll.uuid)
+            "result_link": "/result/{}".format(poll.uuid)
         }
 
         print(variables)

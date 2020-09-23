@@ -6,10 +6,11 @@ from flask_migrate import Migrate
 def create_app(mode=None):
     """Create and configure an instance of the Flask application."""
     if mode is not None:
-        os.environ['FLASK_ENV'] = mode
+        os.environ['ENV'] = mode
 
     app = Flask(__name__, instance_relative_config=True)
     print(app.config['ENV'])
+    
     if mode == 'production' or app.config['ENV'] == 'production':
         app.config.from_object(config.ProductionConfig)
     elif mode == 'development' or app.config['ENV'] == 'development':

@@ -39,7 +39,13 @@ jobs:
     steps:
       - checkout
       - heroku/install
-      - heroku/push-docker-image
+      - run:
+          name: Login into Heroku Docker Repository
+          command: |
+            docker ps
+            heroku container:login
+            heroku container:push web
+            heroku container:release web
 
 workflows:
   main:

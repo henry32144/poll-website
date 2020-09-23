@@ -48,8 +48,8 @@ jobs:
       - run:
           name: Build & push Docker image then release
           command: |
-            heroku container:push web
-            heroku container:release web
+            heroku container:push web -a $HEROKU_API_NAME
+            heroku container:release web -a $HEROKU_API_NAME
 
 workflows:
   main:

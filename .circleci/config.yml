@@ -46,7 +46,8 @@ jobs:
           name: Login into Heroku Docker Repository 
           command: |
             docker login --username=_ --password=$HEROKU_API_KEY registry.heroku.com
-      - heroku/push-docker-image
+      - heroku/push-docker-image:
+        process-types: web
       - heroku/release-docker-image
 
 workflows:
@@ -59,4 +60,3 @@ workflows:
           filters:
             branches:
               only: production
-          process-types: web

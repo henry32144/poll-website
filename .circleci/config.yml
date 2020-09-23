@@ -55,6 +55,7 @@ workflows:
     jobs:
       - build-and-test
       - deploy:
+          process-types: web
           requires:
             - build-and-test
           filters:

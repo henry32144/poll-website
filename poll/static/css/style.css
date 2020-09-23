@@ -28,3 +28,14 @@ body {
 .link-box {
     background-color: #fff;
 }
+
+.chart-container {
+    position: relative;
+    min-height: 300px;
+}
+
+.spinner-border {
+    position: absolute;
+    top: 50%;
+    right: 50%; /* or: left: 50%; */
+}

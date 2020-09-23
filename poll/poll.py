@@ -19,6 +19,7 @@ def generate_access_key():
 
 @bp.route("/")
 def index():
+    print(request.base_url)
     return render_template("index.html")
 
 @bp.route("/result", methods=["POST"])  
@@ -100,7 +101,7 @@ def share(uuid):
         abort(404)
     
     variables = {
-        "share_link": "http://127.0.0.1:5000/poll/{}".format(poll.uuid),
+        "share_link": "{}poll/{}".format(request.url_root, poll.uuid),
     }
 
     return render_template("share.html", **variables)

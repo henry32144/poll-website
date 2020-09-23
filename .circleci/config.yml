@@ -57,7 +57,10 @@ jobs:
 workflows:
   main:
     jobs:
-      - build-and-test
+      - build-and-test:
+          filters:
+            branches:
+              ignore: master
       - deploy:
           requires:
             - build-and-test

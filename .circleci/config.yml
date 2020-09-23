@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   python: circleci/python@0.2.1
+  heroku: circleci/heroku@1.2.2
 
 jobs:
   build-and-test:
@@ -28,8 +29,38 @@ jobs:
           command: |
             . venv/bin/activate
             python -m pytest
+  deploy:
+    machine: true
+    environment:
+        FLASK_APP: poll
+        FLASK_ENV: production
+    steps:
+      - checkout
+      - run:
+          name: Install heroku
+          command: |
+            curl https://cli-assets.heroku.com/install.sh | sh
+      - run:
+          name: List file
+          command: |
+            ls
+      - run:
+          name: Login into Heroku Docker Repository 
+          command: |
+            docker login --username=_ --password=$HEROKU_API_KEY registry.heroku.com
+      - run:
+          name: Build & push Docker image then release
+          command: |
+            heroku container:push web -a $HEROKU_APP_NAME
+            heroku container:release web -a $HEROKU_APP_NAME
 
 workflows:
   main:
     jobs:
       - build-and-test
+      - deploy:
+          requires:
+            - build-and-test
+          filters:
+            branches:
+              only: production

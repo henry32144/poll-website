@@ -3,22 +3,22 @@ import config
 from flask import Flask
 from flask_migrate import Migrate
 
-def create_app(test_config=None):
+def create_app(mode=None):
     """Create and configure an instance of the Flask application."""
+    if mode is not None:
+        os.environ['FLASK_ENV'] = mode
 
     app = Flask(__name__, instance_relative_config=True)
-
-    if app.config['ENV'] == 'production':
+    print(app.config['ENV'])
+    if mode == 'production' or app.config['ENV'] == 'production':
         app.config.from_object(config.ProductionConfig)
-    else:
+    elif mode == 'development' or app.config['ENV'] == 'development':
         app.config.from_object(config.DevelopmentConfig)
-
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile("config.py", silent=True)
     else:
-        # load the test config if passed in
-        app.config.update(test_config)
+        # Testing
+        app.config.from_object(config.TestConfig)
+
+    app.config.from_pyfile("config.py", silent=True)
 
     # ensure the instance folder exists
     try:

@@ -34,10 +34,12 @@ jobs:
     environment:
         FLASK_APP: poll
         FLASK_ENV: production
-        
     steps:
       - checkout
-      - heroku/install
+      - run:
+          name: Install heroku
+          command: |
+            curl https://cli-assets.heroku.com/install.sh | sh
       - run:
           name: List file
           command: |
@@ -46,16 +48,17 @@ jobs:
           name: Login into Heroku Docker Repository 
           command: |
             docker login --username=_ --password=$HEROKU_API_KEY registry.heroku.com
-      - heroku/push-docker-image:
-        process-types: web
-      - heroku/release-docker-image
+      - run:
+          name: Build & push Docker image then release
+          command: |
+            heroku container:push web -a $HEROKU_APP_NAME
+            heroku container:release web -a $HEROKU_APP_NAME
 
 workflows:
   main:
     jobs:
       - build-and-test
       - deploy:
-          process-types: web
           requires:
             - build-and-test
           filters:

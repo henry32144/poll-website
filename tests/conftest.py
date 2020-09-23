@@ -4,11 +4,7 @@ from poll import create_app
 
 @pytest.fixture
 def app():
-    app = create_app({
-        'TESTING': True,
-        'DEBUG': True,
-        'SQLALCHEMY_DATABASE_URI': 'sqlite:///.test.db',
-    })
+    app = create_app("testing")
 
     yield app
 

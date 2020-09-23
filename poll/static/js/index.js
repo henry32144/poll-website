@@ -2,7 +2,9 @@ $(document).ready(function () {
 
     var maxSelectionLimit = 2;
 
-    // Set maximum selection limit
+    /**
+     * Set maximum selection limit
+     */
     const setMaxSelectionLimit = (limit) => {
         $('#max-selection-limit').attr('max', limit);
 

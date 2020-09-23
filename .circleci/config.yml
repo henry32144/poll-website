@@ -28,11 +28,6 @@ jobs:
           command: |
             . venv/bin/activate
             python -m pytest
-      - store_artifacts:
-          path: test-reports/
-          destination: tr1
-      - store_test_results:
-          path: test-reports/
 
 workflows:
   main:

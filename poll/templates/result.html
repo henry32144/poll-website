@@ -24,13 +24,38 @@
 
     <main role="main" class="container">
         <div class="main-content">
-            <div class="row justify-content-center">
-                <div class="my-3 col-md-8 shadow">
-                    <div class="mt-3 row justify-content-center">
-                        <h2 class="col-md-8">Result</h2>
+            <div class="my-3 row justify-content-center">
+                <div class="col-md-10 shadow">
+                    <div class="my-3 row justify-content-center">
+                        <h3 id="poll-question" class="col-md-8" data-id="{{ uuid or "" }}">{{ question or "Question" }}
+                        </h3>
                     </div>
-                    <div class="mx-1 my-3 row justify-content-center">
-
+                    <div class="my-3 row justify-content-center">
+                        <h5 class="col-md-8">Poll Result: {{ result or "No vote yet" }}</h5>
+                    </div>
+                    <div class="my-3 row justify-content-center">
+                        <h5 class="col-md-8">Summary</h5>
+                        <div class="mt-1 col-md-8">
+                            <div class="row">
+                                <p id="total-votes-text" class="col-md-8" data-total-votes="{{ total_votes or 0 }}">
+                                    Total votes: {{ total_votes or 0 }}</p>
+                            </div>
+                            {% if total_votes > 0 %}
+                                <div class="mt-3 row">
+                                    <div class="chart-container col-12">
+                                        <canvas id="vote-chart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="mt-5 row">
+                                    <div class="chart-container col-12">
+                                        <canvas id="ratio-chart"></canvas>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="spinner-border" style="display: none;" role="status">
+                        <span class="sr-only">Loading charts...</span>
                     </div>
                 </div>
             </div>
@@ -38,8 +63,11 @@
 
     </main>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"
+        integrity="sha512-s+xg36jbIujB2S2VKfpGmlC3T5V2TF3lY48DX7u2r9XzGzgPsa6wTpOQA7J9iffvdeBN0q9tKzRxVxw1JviZPg=="
+        crossorigin="anonymous"></script>
     <script src="../static/js/jquery-3.5.1.slim.min.js"></script>
     <script src="../static/js/bootstrap.bundle.min.js"></script>
-    <script src="../static/js/share.js"></script>
+    <script src="../static/js/result.js"></script>
 
 </html>

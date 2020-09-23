@@ -2,6 +2,9 @@ $(document).ready(function () {
 
     var max_limit = parseInt($("#max-limit").text());
 
+    /**
+     * Generate UUID for poll
+     */
     function create_UUID() {
         var dt = new Date().getTime();
         var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -46,8 +49,10 @@ $(document).ready(function () {
         }
     }
 
+    // Check whether cookie is exist, if not then create one
     checkCookie();
 
+    // Form validation
     $("#poll-form").on("submit", function (e) {
         var arr = $(this).serialize().toString();
         if (arr.indexOf("answer") < 0) {

@@ -3,11 +3,15 @@ import uuid
 import hashlib
 from poll.models import db
 from poll.models import Poll, Answer, Vote
-from flask import Flask, render_template, request, Blueprint, escape, abort, redirect, url_for
+from sqlalchemy import func
+from flask import Flask, render_template, request, Blueprint, escape, abort, redirect, url_for, jsonify
 
 bp = Blueprint("poll", __name__)
 
 def generate_access_key():
+    """
+        Generate access key for modifications, this feature is not inplemented yet
+    """
     random_value = os.urandom(16)
     md5 = hashlib.md5()
     md5.update(random_value)
@@ -17,31 +21,96 @@ def generate_access_key():
 def index():
     return render_template("index.html")
 
-@bp.route("/result/<uuid>")
-def result(uuid):
-    # Do basic analytics
-    return render_template("result.html")
+@bp.route("/result", methods=["POST"])  
+@bp.route("/result/<uuid>", methods=["GET"])
+def result(uuid=None):
+    if request.method == "GET":
+        """
+            return basic data for page rendering
+        """
+        poll = Poll.query.filter_by(uuid=uuid).first()
+
+        if poll is None:
+            abort(404)
+        
+        # Select answers and vote count in descending order 
+        answer_tuples = Answer.query.with_entities(Answer.text, func.count(Answer.votes)) \
+                    .filter_by(poll_id=poll.id).outerjoin(Vote) \
+                    .group_by(Answer.id).order_by(func.count(Vote.id).desc()).all()
+
+        result = "No vote yet"
+
+        total_votes = len(poll.votes)
+
+        if len(answer_tuples) > 0 and total_votes > 0:
+            # Find the most voted answer
+            result = answer_tuples[0][0]
+            current_highest = answer_tuples[0][1]
+            for i in range(len(answer_tuples)):
+                if i == 0:
+                    continue
+                if answer_tuples[i][1] > current_highest:
+                    # Tie, this answer has the same votes as the current highest votes
+                    result = "Tie"
+
+        
+
+        variables = {
+            "question": poll.question,
+            "answers": answer_tuples,
+            "total_votes": total_votes,
+            "result": result,
+            "uuid": poll.uuid
+        }
+
+        return render_template("result.html", **variables)
+
+    elif request.method == "POST":
+        """
+            Receive uuid and return data for drawing charts
+        """
+        req = request.get_json()
+        uuid = req.get("uuid", None)
+
+        poll = Poll.query.filter_by(uuid=uuid).first()
+
+        if poll is None:
+            abort(404)
+
+        # Select answers and vote count in descending order 
+        answer_tuples = Answer.query.with_entities(Answer.text, func.count(Answer.votes)) \
+                    .filter_by(poll_id=poll.id).outerjoin(Vote) \
+                    .group_by(Answer.id).order_by(func.count(Vote.id).desc()).all()
+
+        print(answer_tuples)
+        answer_texts, votes = zip(*answer_tuples)
+
+        variables = {
+            "answer_texts": answer_texts,
+            "votes": votes,
+        }
+
+        return jsonify(variables)
 
 @bp.route("/share/<uuid>")
 def share(uuid):
-    obj = Poll.query.filter_by(uuid=uuid).first()
+    poll = Poll.query.filter_by(uuid=uuid).first()
 
-    if obj is None:
+    if poll is None:
         abort(404)
     
     variables = {
-        "share_link": "/poll/{}".format(obj.uuid),
+        "share_link": "http://127.0.0.1:5000/poll/{}".format(poll.uuid),
     }
 
     return render_template("share.html", **variables)
 
 @bp.route("/vote", methods=["POST"])
 def vote():
-    print(request.form)
     user_id = request.form["uuid"]
     poll_id = request.form["pollId"]
     voted_answers_id = request.form.getlist("answer")
-    print(voted_answers_id)
+
     # Sanity check
     if user_id is None or voted_answers_id is None or poll_id is None:
         abort(422)     
@@ -57,7 +126,7 @@ def vote():
         abort(422)
 
     # Delete old votes
-    Vote.query.filter_by(poll_id=poll_id).delete()
+    Vote.query.filter_by(poll_id=poll_id, voter=user_id).delete()
 
     voted_answers = []
     for ans_id in voted_answers_id:
@@ -119,11 +188,14 @@ def poll(uuid=None):
     
     elif request.method == "GET":
         # User has voted before, help him/her check the answers.
-        user_uuid = request.cookies.get('uuid')
+        user_uuid = request.cookies.get("uuid")
         voted_answers = None
 
-        poll = Poll.query.filter_by(uuid=uuid).first()
-
+        try:
+            poll = Poll.query.filter_by(uuid=uuid).first()
+        except Exception as e:
+            abort(422)
+        
         if poll is None:
             abort(404)
 

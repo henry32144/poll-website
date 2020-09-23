@@ -5,5 +5,4 @@ COPY requirements.txt ./
 RUN pip install -r requirements.txt
 
 COPY . .
-
-CMD ["gunicorn", "wsgi:app", "-c", "./gunicorn.conf.py"]
+ENTRYPOINT ["gunicorn", "wsgi:app", "-c", "./gunicorn.conf.py"]

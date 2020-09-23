@@ -34,6 +34,7 @@ jobs:
     environment:
         FLASK_APP: poll
         FLASK_ENV: production
+        
     steps:
       - checkout
       - heroku/install
@@ -58,3 +59,4 @@ workflows:
           filters:
             branches:
               only: production
+          process-types: web

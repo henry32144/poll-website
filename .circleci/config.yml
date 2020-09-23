@@ -38,9 +38,9 @@ jobs:
       - checkout
       - heroku/install
       - run:
-          name: Docker test
+          name: List file
           command: |
-            docker ps
+            ls
       - run:
           name: Login into Heroku Docker Repository 
           command: |

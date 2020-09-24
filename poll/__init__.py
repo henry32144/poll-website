@@ -2,10 +2,12 @@ import os
 import config
 from flask import Flask
 from flask_migrate import Migrate
+from flask_talisman import Talisman
 
 def create_app(mode=None):
     """Create and configure an instance of the Flask application."""
     app = Flask(__name__, instance_relative_config=True)
+    Talisman(app)
 
     if mode is not None:
         app.config['ENV'] = mode

@@ -8,7 +8,6 @@
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
   * [Instruction](#Instruction)
-* [Usage](#usage)
 * [Author](#Author)
 * [License](#license)
 
@@ -56,11 +55,6 @@ set FLASK_ENV=production
 flask run
 ```
 4. Open your browser and type `127.0.0.1:5000` in url
-
-<!-- USAGE -->
-## Usage
-
-TBD
 
 <!-- CONTRIBUTING -->
 ## Author

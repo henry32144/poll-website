@@ -20,9 +20,9 @@ $(document).ready(function () {
 
     function toogleLoading(isLoading) {
         if (isLoading) {
-            $(".spinner-border").show();
+            $(".spinner-border").removeClass("hide-element");
         } else {
-            $(".spinner-border").hide();
+            $(".spinner-border").addClass("hide-element");
         }
     }
 
@@ -132,7 +132,7 @@ $(document).ready(function () {
             }
 
         } else {
-            console.log("Erro: UUID is empty")
+            console.log("Error: UUID is empty or total votes is 0")
         }
     }
 

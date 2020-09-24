@@ -50,7 +50,7 @@ def result(uuid=None):
             for i in range(len(answer_tuples)):
                 if i == 0:
                     continue
-                if answer_tuples[i][1] > current_highest:
+                if answer_tuples[i][1] >= current_highest:
                     # Tie, this answer has the same votes as the current highest votes
                     result = "Tie"
 

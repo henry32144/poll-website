@@ -39,3 +39,7 @@ body {
     top: 50%;
     right: 50%; /* or: left: 50%; */
 }
+
+.hide-element {
+    display: none;
+}
